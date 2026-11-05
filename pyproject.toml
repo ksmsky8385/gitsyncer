@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gitsyncer"
+version = "0.1.0"
+description = "Interactive multi-repository Git sync for Linux and Termux"
+requires-python = ">=3.9"
+authors = [{name = "seunkang"}]
+dependencies = []
+
+[project.scripts]
+gitsyncer = "gitsyncer.cli:main"
+"깃싱커" = "gitsyncer.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["gitsyncer*"]
