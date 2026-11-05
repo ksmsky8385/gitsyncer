@@ -1,16 +1,10 @@
 # gitsyncer
 
-작성자: seunkang
-
-## Description
-
 Linux와 Android Termux에서 여러 Git 저장소를 관리하는 터미널 도구입니다. 저장소 경로를 등록하고 상태를 조회하거나, 특정 저장소 또는 전체 저장소를 이름순으로 pull·push할 수 있습니다.
 
 `gitsyncer`와 `깃싱커`는 같은 프로그램을 실행합니다. 터미널의 메뉴·도움말·입력 안내·오류 메시지는 영문입니다.
 
-## Instructions
-
-### 설치
+## 설치
 
 Python 3.9 이상과 Git이 필요합니다. 셸 자동완성은 Bash·Zsh를 지원하며, 별도 Python 패키지는 필요하지 않습니다. Termux에서는 먼저 해당 환경의 패키지 관리자로 Python과 Git을 준비하세요.
 
@@ -32,7 +26,7 @@ sh install.sh --no-shell-setup
 
 업데이트도 `sh install.sh`로 수행합니다. 등록한 저장소 목록은 보존됩니다.
 
-### 명령어
+## 사용법
 
 ```sh
 gitsyncer status                    # 저장소 목록과 등록·삭제 메뉴
@@ -51,7 +45,7 @@ gitsyncer push project             # 특정 저장소 commit·push
 
 `status`의 대화형 메뉴에서 `a`는 등록, `d`는 등록 삭제, `r`은 새로고침, Enter 또는 `q`는 종료입니다. 터미널이 아닌 환경에서는 목록만 출력하고 종료합니다.
 
-### 자동완성과 저장소 이름
+## 자동완성과 저장소 등록
 
 - `gitsyncer` 뒤에 공백을 입력하고 Tab을 누르면 명령 목록이 표시됩니다.
 - `pull`, `push`, `remove` 뒤에서는 등록된 저장소 이름을 완성합니다.
@@ -59,13 +53,13 @@ gitsyncer push project             # 특정 저장소 commit·push
 - 저장소 이름은 실제 Git 루트 경로의 마지막 폴더명입니다. 하위 폴더를 지정해도 Git 루트를 등록합니다.
 - 같은 이름으로 다른 경로를 중복 등록할 수 없습니다. 이런 경우 폴더명을 구분해야 합니다. `all`은 전체 선택용 예약 이름입니다.
 
-### Pull
+## Pull 동작
 
 `fetch --prune` 후 `pull --ff-only --no-rebase --no-autostash`를 실행합니다.
 
 로컬 변경, 미해결 충돌, detached HEAD, 진행 중인 merge·rebase가 있으면 해당 저장소를 처리하지 않습니다. 브랜치가 서로 갈라져 fast-forward가 불가능하면 직접 해결하도록 오류를 표시합니다. 변경 사항을 자동으로 stash하거나 버리지 않습니다.
 
-### Push
+## Push 동작
 
 변경된 저장소는 `git status --short`로 변경 목록을 보여주고 커밋 메시지를 입력받습니다. 메시지를 입력하면 저장소 루트에서 `git add .` → commit → push 순서로 처리합니다. Git의 ignore 규칙은 그대로 적용됩니다.
 
@@ -77,19 +71,7 @@ gitsyncer push project             # 특정 저장소 commit·push
 
 한 저장소가 실패해도 다음 저장소를 계속 처리하고 마지막에 실패 목록을 출력합니다. Git 인증과 훅은 기존 설정을 사용합니다. Git 표준 메시지는 C locale로 영문 출력하지만, 외부 인증 도구나 사용자 훅의 언어는 해당 도구가 결정합니다.
 
-## Resources
-
-- [Git pull](https://git-scm.com/docs/git-pull): fast-forward 통합과 pull 옵션.
-- [Git push](https://git-scm.com/docs/git-push): 원격 브랜치와 push 동작.
-- [Python readline](https://docs.python.org/3/library/readline.html): 대화형 자동완성. 사용할 수 없으면 가능한 환경에서 Bash readline으로 경로 입력을 처리합니다.
-
-### AI Usage
-
-요구사항 분석, 프로그램 구현, 자동완성 스크립트 작성, Git 통합 테스트에 AI를 활용했습니다. 테스트는 임시 로컬 저장소와 bare 원격을 사용했으며 사용자 저장소에 실제 pull·push를 실행하지 않았습니다.
-
-## Additional
-
-### 파일과 설정
+## 설정 파일
 
 | 위치 | 용도 |
 | --- | --- |
@@ -102,13 +84,15 @@ gitsyncer push project             # 특정 저장소 commit·push
 
 PC 경로와 Termux 경로는 다를 수 있으므로 각 기기의 실제 경로를 등록하세요. 이 도구는 없는 저장소를 clone하거나 등록 목록을 자동 동기화하지 않습니다.
 
-### 상태 조회와 내부 동작
+## 상태 조회
+
+상태표는 이름과 브랜치 등 각 열의 최대 표시 너비에 맞춰 정렬하며 한글 이름도 지원합니다. 터미널 너비보다 긴 행은 줄바꿈될 수 있습니다.
 
 `status`는 네트워크에 접속하지 않습니다. ahead/behind 값은 로컬의 원격 추적 정보를 사용하므로 실제 원격 상태보다 오래된 값일 수 있습니다. 기기를 바꿔 작업할 때는 먼저 pull로 확인하세요.
 
 등록 목록은 잠금과 원자적 파일 교체로 저장합니다. Git 명령은 셸 문자열 대신 인자 배열로 실행합니다. 저장소는 순차 처리하며 각각의 커밋 메시지를 입력받습니다. 하위 모듈 내부 변경은 상위 저장소의 `git add .`만으로 커밋되지 않습니다.
 
-### 종료 코드
+## 종료 코드
 
 | 코드 | 의미 |
 | --- | --- |
@@ -117,7 +101,7 @@ PC 경로와 Termux 경로는 다를 수 있으므로 각 기기의 실제 경�
 | `2` | 잘못된 명령 인자 |
 | `130` | Ctrl+C 또는 EOF로 취소 |
 
-### 검증
+## 개발 및 테스트
 
 프로젝트 루트에서 실행합니다.
 
@@ -127,6 +111,6 @@ python3 -m unittest discover -s tests -v
 
 Linux에서 14개 통합 테스트와 실제 터미널의 경로·명령 자동완성을 검증했습니다. Termux는 같은 설치 방식을 사용하지만 실제 휴대폰에서의 실행은 아직 검증하지 않았습니다.
 
-### 삭제
+## 삭제
 
 두 실행 파일과 `~/.local/share/gitsyncer/`를 삭제하고, 셸 설정에서 `gitsyncer` 시작·끝 표시 사이의 블록을 제거합니다. 등록 목록을 보존하려면 설정 디렉터리는 남겨두세요.
